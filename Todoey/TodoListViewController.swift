@@ -10,12 +10,40 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
     
-    let itemArray = ["Belajar baca", "cari duid", "cari duid (2)",]
+    var itemArray = ["Belajar baca", "cari duid", "cari duid (2)",]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
+            // what will happen when the user click 'add item' on our UIAlert
+            print("success")
+            print(textField.text!)
+            DispatchQueue.main.async {
+                if let itemText = textField.text {
+                    self.itemArray.append(itemText)
+                    self.tableView.reloadData()
+                }
+            }
+        }
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+    
     
 }
 
@@ -29,6 +57,17 @@ extension TodoListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
         cell.textLabel!.text = itemArray[indexPath.row]
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        print("Selected item: [\(indexPath.row)] \(itemArray[indexPath.row])")
+        tableView.deselectRow(at: indexPath, animated: true)
+        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        } else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
+        
     }
 }
 
