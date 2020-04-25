@@ -11,12 +11,18 @@ import UIKit
 class TodoListViewController: UITableViewController {
     
     var itemArray = ["Belajar baca", "cari duid", "cari duid (2)",]
+    
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        if let savedItems = defaults.array(forKey: "TodoeyItemArray") as? [String] {
+            itemArray = savedItems
+        }
     }
     
+    //  MARK: - Add Item Methods
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         var textField = UITextField()
@@ -25,12 +31,11 @@ class TodoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add item", style: .default) { (action) in
             // what will happen when the user click 'add item' on our UIAlert
-            print("success")
-            print(textField.text!)
             DispatchQueue.main.async {
                 if let itemText = textField.text {
                     self.itemArray.append(itemText)
                     self.tableView.reloadData()
+                    self.defaults.set(self.itemArray, forKey: "TodoeyItemArray")
                 }
             }
         }
